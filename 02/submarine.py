@@ -12,15 +12,17 @@ def yield_file(filename: str) -> Iterable[str]:
 class Submarine:
     depth: int = 0
     h_pos: int = 0
+    aim: int = 0
 
     def forward(self, value: int):
         self.h_pos += value
+        self.depth += self.aim * value
 
     def up(self, value: int):
-        self.depth -= value
+        self.aim -= value
 
     def down(self, value: int):
-        self.depth += value
+        self.aim += value
 
     @property
     def result(self):
@@ -54,9 +56,10 @@ def run_line(sub: Submarine, line: str):
 
 def main():
     sub = Submarine()
-    for line in yield_file('input'):
-        print(line)
+    for line in yield_file('input'):#('test.input'):
         run_line(sub, line)
+        print(f'{line:20} :: {sub.h_pos=:8} {sub.depth=:8} {sub.aim=:8}')
+    print(f'{sub.h_pos=} {sub.depth=}')
     print(sub.result)
 
 
