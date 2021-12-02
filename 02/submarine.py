@@ -25,6 +25,10 @@ class Submarine:
         self.aim += value
 
     @property
+    def status(self):
+        return f'h_pos={self.h_pos:8} depth={self.depth:8} aim={self.aim:8}'
+
+    @property
     def result(self):
         return self.depth * self.h_pos
 
@@ -58,8 +62,8 @@ def main():
     sub = Submarine()
     for line in yield_file('input'):#('test.input'):
         run_line(sub, line)
-        print(f'{line:20} :: {sub.h_pos=:8} {sub.depth=:8} {sub.aim=:8}')
-    print(f'{sub.h_pos=} {sub.depth=}')
+        print(f'{line:20} :: {sub.status}')
+    print(sub.status)
     print(sub.result)
 
 
