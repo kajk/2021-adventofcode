@@ -96,6 +96,22 @@ class BingoGame:
                 return
             print('----------------')
 
+    def play_to_loose(self):
+        winners = [False for _ in range(len(self.boards))]
+        for idx, num in enumerate(self.number_draw):
+            winner_idx = None
+            for board_idx, board in enumerate(self.boards):
+                board.mark_draw(num)
+                if board.has_won() and not winners[board_idx]:
+                    winner_idx = board_idx
+                    winners[board_idx] = True
+            self.print_state(draw_idx=idx)
+            if all(winners):
+                print(f'The last winner is!! {winner_idx}')
+                print(f'Result: {self.boards[winner_idx].sum_unmarked} -> {self.boards[winner_idx].sum_unmarked * num}')
+                return
+            print('----------------')
+
     def print_state(self, draw_idx=0):
         for idx, num in enumerate(self.number_draw):
             if idx <= draw_idx:
@@ -128,7 +144,7 @@ def read_input(filename: str) -> BingoGame:
 
 def main():
     game = read_input('input')
-    game.play()
+    game.play_to_loose()
 
 
 if __name__ == '__main__':
