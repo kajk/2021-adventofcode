@@ -85,10 +85,10 @@ class BingoGame:
     def play(self):
         for idx, num in enumerate(self.number_draw):
             winner_idx = None
-            for b_idx, board in enumerate(self.boards):
+            for board_idx, board in enumerate(self.boards):
                 board.mark_draw(num)
                 if board.has_won():
-                    winner_idx = b_idx
+                    winner_idx = board_idx
             self.print_state(draw_idx=idx)
             if winner_idx is not None:
                 print(f'We have a winner!! {winner_idx}')
@@ -127,7 +127,7 @@ def read_input(filename: str) -> BingoGame:
 
 
 def main():
-    game = read_input('test.input')
+    game = read_input('input')
     game.play()
 
 
