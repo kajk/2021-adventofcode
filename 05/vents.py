@@ -85,7 +85,7 @@ class Grid:
 
 def main():
     grid = Grid()
-    for line in yield_file('test.input'):
+    for line in yield_file('input'):
         col1, row1, col2, row2 = parse_line(line)
         grid.consume_vent(col1, row1, col2, row2)
     grid.print_grid()
