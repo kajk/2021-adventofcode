@@ -38,20 +38,20 @@ class Grid:
 
     def _increment_coordinate(self, col_idx: int, row_idx: int):
         try:
-            outer = self.grid[row_idx]
+            row = self.grid[row_idx]
         except KeyError:
-            outer = {}
-            self.grid[row_idx] = outer
+            row = {}
+            self.grid[row_idx] = row
             if row_idx > self.height:
                 self.height = row_idx
         try:
-            inner = outer[col_idx]
+            field = row[col_idx]
         except KeyError:
-            inner = Field()
-            outer[col_idx] = inner
+            field = Field()
+            row[col_idx] = field
             if col_idx > self.width:
                 self.width = col_idx
-        inner.increment()
+        field.increment()
 
     def consume_vent(self, col1: int, row1: int, col2: int, row2: int):
         for col, row in self._yield_coordinates(col1, row1, col2, row2):
@@ -64,8 +64,6 @@ class Grid:
         col_idx = col1
         while row_idx != row2 + row_step or col_idx != col2 + col_step:
             yield col_idx, row_idx
-            if row_idx > 11 or row_idx < 0:
-                raise RuntimeError()
             col_idx += col_step
             row_idx += row_step
 
@@ -98,7 +96,7 @@ class Grid:
 
 def main():
     grid = Grid()
-    for line in yield_file('test.input'):
+    for line in yield_file('input'):
         col1, row1, col2, row2 = parse_line(line)
         grid.consume_vent(col1, row1, col2, row2)
     grid.print_grid()
