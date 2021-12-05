@@ -54,16 +54,29 @@ class Grid:
         inner.increment()
 
     def consume_vent(self, col1: int, row1: int, col2: int, row2: int):
-        if col1 == col2:
-            print(f'Horizontal line {col1},{row1} -> {col2},{row2}')
-            for idx in range(abs(row1 - row2) + 1):
-                self._increment_coordinate(col1, min(row1, row2) + idx)
-        elif row1 == row2:
-            print(f'Vertical line {col1},{row1} -> {col2},{row2}')
-            for idx in range(abs(col1 - col2) + 1):
-                self._increment_coordinate(min(col1, col2) + idx, row1)
+        for col, row in self._yield_coordinates(col1, row1, col2, row2):
+            self._increment_coordinate(col, row)
+
+    def _yield_coordinates(self, col1: int, row1: int, col2: int, row2: int) -> Tuple[int, int]:
+        row_step = self._determine_step(row1, row2)
+        col_step = self._determine_step(col1, col2)
+        row_idx = row1
+        col_idx = col1
+        while row_idx != row2 + row_step or col_idx != col2 + col_step:
+            yield col_idx, row_idx
+            if row_idx > 11 or row_idx < 0:
+                raise RuntimeError()
+            col_idx += col_step
+            row_idx += row_step
+
+    @staticmethod
+    def _determine_step(one, two):
+        if one < two:
+            return 1
+        elif one > two:
+            return -1
         else:
-            print(f'Skipping line {col1},{row1} -> {col2},{row2}')
+            return 0
 
     def print_grid(self):
         default_field = Field()
@@ -85,7 +98,7 @@ class Grid:
 
 def main():
     grid = Grid()
-    for line in yield_file('input'):
+    for line in yield_file('test.input'):
         col1, row1, col2, row2 = parse_line(line)
         grid.consume_vent(col1, row1, col2, row2)
     grid.print_grid()
