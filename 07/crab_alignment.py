@@ -1,10 +1,15 @@
 #! /usr/bin/env python3
 
 
+def calculate_fuel(start, target) -> int:
+    return sum(range(1, abs(start - target) + 1))
+
+
 def calculate_fuel_requirement(crab_positions, target) -> int:
     total_fuel = 0
     for crab in crab_positions:
-        total_fuel += abs(crab - target)
+        fuel = calculate_fuel(crab, target)
+        total_fuel += fuel
     return total_fuel
 
 
