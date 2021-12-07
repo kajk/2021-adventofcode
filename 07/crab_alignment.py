@@ -2,7 +2,8 @@
 
 
 def calculate_fuel(start, target) -> int:
-    return sum(range(1, abs(start - target) + 1))
+    i = abs(start - target)
+    return (i ** 2 + i)//2
 
 
 def calculate_fuel_requirement(crab_positions, target) -> int:
