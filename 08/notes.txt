@@ -1,0 +1,43 @@
+# 5 on = 0 (abcefg)
+# 2 on = 1 (cf)      **
+# 5 on = 2 (acdeg)
+# 5 on = 3 (acdfg)
+# 4 on = 4 (bcdf)    **
+# 5 on = 5 (abdfg)
+# 6 on = 6 (abdefg)
+# 3 on = 7 (acf)     **
+# 7 on = 8 (abcdefg) **
+# 6 on = 9 (abcdfg)
+
+# acedgfb cdfbe     gcdfa    fbcad     dab   cefabd  cdfgeb eafb  cagedb ab     | cdfeb    fcadb    cdfeb    cdbaf
+# (7)=8   (5)=0235  (5)=0235 (5)=0235  (3)=7 (6)=69  (6)=69 (4)=4 (6)=69 (2)=1    (5)=0235 (5)=0235 (5)=0235 (5)=0235
+# res = wrong
+# a= d
+# b= f
+# c= a
+# d= e|f
+# e= g
+# f= a|b
+# g= c
+# abcdfg | abdefg = cefabd  cdfgeb
+
+
+# 1. len() == 2 --> c,f = <>        (a|b)
+# 2. len() == 3 --> a = <not c,f>   (d)
+# 3. len() == 4 --> b,d = <not c,f> (e|f)
+# 4. len() == 7 --> e,g = <not a,b,c,d,f>   (c|g)
+# 5. len() == 6
+## missing elements c,e  --> cefabd (missing g) cdfgeb (missing a)
+## --> c,e = a|g --> c=a e=g --> f=b,g=c
+# TODO: b und f
+0235
+a = immer
+b = 2/4 **
+c = 3/4
+d = 3/4
+e = 2/4
+f = 3/4 **
+g = immer
+
+
+
