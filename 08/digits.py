@@ -1,6 +1,5 @@
 #! /usr/bin/env python3
 
-import re
 from collections import Counter
 from typing import Iterable
 
@@ -25,14 +24,13 @@ class DigitsLine:
 
     def add_input_element(self, elm: str):
         idx = len(elm)
-        value = self._sort(elm)
+        value = elm  # = self._sort(elm)
         if idx in self.inputs:
             self.inputs[idx].append(value)
         else:
             self.inputs[idx] = [value]
 
     def determine_values(self):
-        a = b = c = d = e = f = g = ''
         # length 2 (only 1)
         c = f = self.inputs[2][0]
         # length 3 (only 1)
@@ -41,28 +39,22 @@ class DigitsLine:
         b = d = rm(self.inputs[4][0], c)
         # length 7 (only 1)
         e = g = rm(self.inputs[7][0], a + c + b)
-        # length 6 (2 entries)
-        missing_options = self._find_missing(self.inputs[6][0])
-        missing_options.append(*self._find_missing(self.inputs[6][1]))
-        if missing_options[0] in c:
-            c = missing_options[0]
-            f = rm(f, c)
-            g = missing_options[1]
-            e = rm(e, g)
+        # length 5 (3 entries)
+        five_counter = Counter(''.join(self.inputs[5]))
+        singles = [e for e, _ in filter(lambda v: v[1] == 1, five_counter.items())]
+        if singles[0] in b:
+            b = singles[0]
+            e = singles[1]
         else:
-            c = missing_options[1]
-            f = rm(f, c)
-            e = missing_options[0]
-            g = rm(g, e)
-        # length 5 (4 entries) --> not resolved: b und d
-        all_b_ds = ''.join(re.findall('[' + b + ']', ''.join(self.inputs[5])))
-        counts = Counter(all_b_ds)
-        if counts[b[0]] == 3:
-            d = b[0]
-            b = b[1]
-        else:
-            d = b[1]
-            b = b[0]
+            b = singles[1]
+            e = singles[0]
+        d = rm(d, b)
+        g = rm(g, e)
+        # length 6 (3 entries)
+        six_counter = Counter(rm(''.join(self.inputs[6]), a + b + d + e))
+        c = [e for e, _ in filter(lambda v: v[1] == 2, six_counter.items())][0]
+        f = rm(f, c)
+
         # populate values dict
         self.values[self._sort(a + b + c + e + f + g)] = 0
         self.values[self._sort(c + f)] = 1
@@ -75,14 +67,14 @@ class DigitsLine:
         self.values[self._sort(a + b + c + d + e + f + g)] = 8
         self.values[self._sort(a + b + c + d + f + g)] = 9
         # print segment
-        print(f'''
- {a*4}
-{b}    {c}
-{b}    {c}
- {d*4}
-{e}    {f}
-{e}    {f}
- {g*4}''')
+#         print(f'''
+#  {a * 4}
+# {b}    {c}
+# {b}    {c}
+#  {d * 4}
+# {e}    {f}
+# {e}    {f}
+#  {g * 4}''')
 
     @staticmethod
     def _sort(value: str) -> str:
@@ -91,18 +83,10 @@ class DigitsLine:
     def parse_value(self, value: str) -> int:
         return self.values[self._sort(value)]
 
-    @staticmethod
-    def _find_missing(value: str):
-        missing = []
-        for v in 'abcdefg':
-            if v not in value:
-                missing.append(v)
-        return missing
-
 
 def main():
-    # TODO: Not for each digit a value is given in the input!!!
-    for line in yield_file('test.input'):
+    result = 0
+    for line in yield_file('input'):
         digi = DigitsLine()
         res = ''
         output_values = False
@@ -115,6 +99,8 @@ def main():
             else:
                 res += str(digi.parse_value(elm))
         print(int(res))
+        result += int(res)
+    print(f'Result: {result}')
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-# 5 on = 0 (abcefg)
+# 6 on = 0 (abcefg)
 # 2 on = 1 (cf)      **
 # 5 on = 2 (acdeg)
 # 5 on = 3 (acdfg)
@@ -9,16 +9,16 @@
 # 7 on = 8 (abcdefg) **
 # 6 on = 9 (abcdfg)
 
-# acedgfb cdfbe     gcdfa    fbcad     dab   cefabd  cdfgeb eafb  cagedb ab     | cdfeb    fcadb    cdfeb    cdbaf
-# (7)=8   (5)=0235  (5)=0235 (5)=0235  (3)=7 (6)=69  (6)=69 (4)=4 (6)=69 (2)=1    (5)=0235 (5)=0235 (5)=0235 (5)=0235
+# acedgfb cdfbe     gcdfa    fbcad     dab   cefabd  cdfgeb  eafb  cagedb  ab     | cdfeb    fcadb    cdfeb    cdbaf
+# (7)=8   (5)=235  (5)=235   (5)=235  (3)=7  (6)=069 (6)=069 (4)=4 (6)=069 (2)=1    (5)=235  (5)=235  (5)=235  (5)=235
 # res = wrong
 # a= d
-# b= f
-# c= a
+# b= e|f
+# c= a|b 
 # d= e|f
-# e= g
+# e= c|g
 # f= a|b
-# g= c
+# g= c|g
 # abcdfg | abdefg = cefabd  cdfgeb
 
 
@@ -26,6 +26,17 @@
 # 2. len() == 3 --> a = <not c,f>   (d)
 # 3. len() == 4 --> b,d = <not c,f> (e|f)
 # 4. len() == 7 --> e,g = <not a,b,c,d,f>   (c|g)
+
+
+# len() == 6
+cefabd   cdfgeb   cagedb
+
+ 
+# len() == 5
+cdfbe   gcdfa   fbcad
+
+
+# WRONG:
 # 5. len() == 6
 ## missing elements c,e  --> cefabd (missing g) cdfgeb (missing a)
 ## --> c,e = a|g --> c=a e=g --> f=b,g=c
