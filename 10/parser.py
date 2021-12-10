@@ -43,7 +43,7 @@ SCORE_MAP = {
 
 def main():
     result = 0
-    for line in yield_file('test.input'):
+    for line in yield_file('input'):
         chunks = []
         for elm in line:
             if elm in ['(', '[', '{', '<']:
