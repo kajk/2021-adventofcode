@@ -1,44 +1,9 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python3.9
 
 from typing import Iterable
 from colorama import Fore, Style
-
-def endless_integers(start = 0) -> Iterable[int]:
-    idx = start
-    while True:
-        yield idx
-        idx += 1
-
-
-def all_lines(filename: str):
-    with open(filename) as fp:
-        return [line.strip() for line in fp.readlines()]
-
-
-def yield_all_neighbours(row, col, grid) -> Iterable:
-    # row + 1
-    if row - 1 >= 0:
-        yield grid[row - 1][col], row - 1, col
-        if col - 1 >= 0:
-            yield grid[row - 1][col - 1], row - 1, col -1
-        if col + 1 < len(grid[0]):
-            yield grid[row - 1][col + 1], row - 1, col + 1
-    # == row
-    if col - 1 >= 0:
-        yield grid[row][col - 1], row, col -1
-    if col + 1 < len(grid[0]):
-        yield grid[row][col + 1], row, col + 1
-    # row + 1
-    if row + 1 < len(grid):
-        yield grid[row + 1][col], row + 1, col
-        if col - 1 >= 0:
-            yield grid[row + 1][col - 1], row + 1, col -1
-        if col + 1 < len(grid[0]):
-            yield grid[row + 1][col + 1], row + 1, col + 1
-
-
-def color(value):
-    return Fore.CYAN + str(value) + Style.RESET_ALL
+from shared import all_lines, endless_ints, yield_all_neighbours, \
+        color, yield_grid_elms, yield_grid
 
 
 class Octopus:
@@ -74,16 +39,15 @@ class Octopus:
 
 def build_grid(lines):
     grid = [list(range(len(lines))) for _ in range(len(lines[0]))]
-    for row_idx, row in enumerate(lines):
-        for col_idx, elm in enumerate(row):
-            grid[row_idx][col_idx] = Octopus(row_idx, col_idx, elm)
-    for o in [elm for sublist in grid for elm in sublist]:
+    for row_idx, col_idx, elm in yield_grid(lines):
+        grid[row_idx][col_idx] = Octopus(row_idx, col_idx, elm)
+    for o in yield_grid_elms(grid):
         o.set_grid(grid)
     return grid
 
 
 def step(grid):
-    for o in [elm for sublist in grid for elm in sublist]:
+    for o in yield_grid_elms(grid):
         o.step()
 
 
@@ -99,13 +63,13 @@ def after_step(grid):
 
 
 def all_flashing(grid):
-    return all(elm.flashed for sublist in grid for elm in sublist)
+    return all(elm.flashed for elm in yield_grid_elms(grid))
 
 
 def main():
     lines = all_lines('input')
     grid = build_grid(lines)
-    for i in endless_integers(1):
+    for i in endless_ints(1):
         step(grid)
         print(f'After step {i}')
         if all_flashing(grid):

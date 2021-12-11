@@ -1,12 +1,8 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python3.9
 
 from typing import Iterable
 from colorama import Fore, Style
-
-def yield_file(filename: str) -> Iterable[str]:
-    with open(filename) as fp:
-        for line in fp:
-            yield line.strip()
+from shared import yield_file, color
 
 
 class Chunk:
@@ -30,10 +26,6 @@ class Chunk:
             return '>'
 
 
-def color(value: str):
-    return Fore.CYAN + value + Style.RESET_ALL
-
-
 def main():
     SCORE_MAP = {
         ')': 1,
@@ -52,7 +44,6 @@ def main():
                 if chunks[-1].is_valid_closing(elm):
                     del chunks[-1]
                 else:
-                    # print(f'{color(line)} - Expected {color(chunks[-1].expected_closing)}, but found {color(elm)} instead.')
                     chunks = []
                     break
         if len(chunks) > 0:

@@ -1,7 +1,8 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python3.9
 
 from __future__ import annotations
 from typing import Tuple
+from shared import join_list
 
 
 class NewFish:
@@ -52,14 +53,11 @@ def next_day(fishes: list[int]) -> list[int]:
     return fishes
 
 
-def join_int_list(ints: list[int]) -> str:
-    return f'{",".join([str(elm) for elm in ints])}'
-
 def main():
     with open('input') as fp:
         input_line = fp.readline().strip()
         fishes = [int(f) for f in input_line.split(',')]
-        print(f'Initial state: {join_int_list(fishes)}')
+        print(f'Initial state: {join_list(fishes, ",")}')
         shool = FishShool(fishes)
         for day in range(1, 256 + 1):
             shool.pass_shool_day()

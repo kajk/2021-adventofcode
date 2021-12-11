@@ -1,12 +1,8 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python3.9
+
 import re
 from typing import Iterable, Tuple
-
-
-def yield_file(filename: str) -> Iterable[str]:
-    with open(filename) as fp:
-        for line in fp:
-            yield line.strip()
+from shared import yield_file
 
 
 def parse_line(line: str) -> Tuple[int, int, int, int]:

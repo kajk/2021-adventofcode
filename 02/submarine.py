@@ -1,12 +1,7 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python3.9
 
 from typing import Iterable
-
-
-def yield_file(filename: str) -> Iterable[str]:
-    with open(filename) as fp:
-        for line in fp:
-            yield line.strip()
+from shared import yield_file
 
 
 class Submarine:

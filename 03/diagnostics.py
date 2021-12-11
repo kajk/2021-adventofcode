@@ -1,14 +1,9 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python3.9
 
 from __future__ import annotations
 
 from typing import Iterable, Callable
-
-
-def yield_file(filename: str) -> Iterable[str]:
-    with open(filename) as fp:
-        for line in fp:
-            yield line.strip()
+from shared import yield_file
 
 
 class OccurrencesCounter:

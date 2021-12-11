@@ -1,20 +1,8 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python3.9
 
 from collections import Counter
 from typing import Iterable
-
-
-def yield_file(filename: str) -> Iterable[str]:
-    with open(filename) as fp:
-        for line in fp:
-            yield line.strip()
-
-
-def rm(src: str, e: Iterable) -> str:
-    res = src
-    for remove in e:
-        res = res.replace(remove, '')
-    return res
+from shared import remove_from_str as rm, yield_file
 
 
 class DigitsLine:

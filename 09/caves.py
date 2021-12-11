@@ -1,19 +1,8 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python3.9
 
 from colorama import Fore, Style
 from typing import Iterable, Tuple
-
-
-def yield_neighbours(row: int, col: int, grid) -> Iterable[Tuple[int, int, int]]:
-    if row - 1 >= 0:
-        yield grid[row - 1][col], row -1, col
-    if row + 1 < len(grid):
-        yield grid[row + 1][col], row + 1, col
-    if col - 1 >= 0:
-        yield grid[row][col - 1], row, col -1
-    if col + 1 < len(grid[0]):
-        yield grid[row][col + 1], row, col + 1
-
+from shared import yield_neighbours, yield_grid
 
 def check_neighbours(row: int, col: int, grid) -> bool:
     value = grid[row][col]
@@ -53,15 +42,15 @@ def main():
     with open('input') as fp:
         grid = [line.strip() for line in fp.readlines()]
         basins = []
-        for row_idx, row in enumerate(grid):
-            for col_idx, col in enumerate(row):
-                l = check_neighbours(row_idx, col_idx, grid)
-                if l:
-                    basins.append(Basin(row_idx, col_idx, col, grid))
-                    print(Fore.CYAN + col + Style.RESET_ALL, end='')
-                else:
-                    print(col, end='')
-            print()
+        for row_idx, col_idx, col in yield_grid(grid):
+            if col_idx == 0 and row_idx != 0:
+                print()
+            l = check_neighbours(row_idx, col_idx, grid)
+            if l:
+                basins.append(Basin(row_idx, col_idx, col, grid))
+                print(Fore.CYAN + col + Style.RESET_ALL, end='')
+            else:
+                print(col, end='')
         print('----')
         for b in basins:
             b.print_marked_grid(grid)
@@ -79,15 +68,15 @@ def main_part1():
     with open('input') as fp:
         lines = [line.strip() for line in fp.readlines()]
         lowest = []
-        for row_idx, row in enumerate(lines):
-            for col_idx, col in enumerate(row):
-                l = check_neighbours(row_idx, col_idx, lines)
-                if l:
-                    lowest.append(int(col))
-                    print(Fore.CYAN + col + Style.RESET_ALL, end='')
-                else:
-                    print(col, end='')
-            print()
+        for row_idx, col_idx, col in yield_grid(grid):
+            if col_idx == 0 and row_idx != 0:
+                print()
+            l = check_neighbours(row_idx, col_idx, lines)
+            if l:
+                lowest.append(int(col))
+                print(Fore.CYAN + col + Style.RESET_ALL, end='')
+            else:
+                print(col, end='')
         print(lowest)
         result = sum(i + 1 for i in lowest)
         print(f'Result: {result}')
