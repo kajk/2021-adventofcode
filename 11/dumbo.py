@@ -3,6 +3,13 @@
 from typing import Iterable
 from colorama import Fore, Style
 
+def endless_integers(start = 0) -> Iterable[int]:
+    idx = start
+    while True:
+        yield idx
+        idx += 1
+
+
 def all_lines(filename: str):
     with open(filename) as fp:
         return [line.strip() for line in fp.readlines()]
@@ -91,8 +98,26 @@ def after_step(grid):
     return flashes
 
 
+def all_flashing(grid):
+    return all(elm.flashed for sublist in grid for elm in sublist)
+
+
 def main():
-    lines = all_lines('test.input')
+    lines = all_lines('input')
+    grid = build_grid(lines)
+    for i in endless_integers(1):
+        step(grid)
+        print(f'After step {i}')
+        if all_flashing(grid):
+            after_step(grid)
+            print(f'All Flashing! on step {i}')
+            break
+        after_step(grid)
+        print()
+
+
+def main_part1():
+    lines = all_lines('input')
     grid = build_grid(lines)
     print('Before any steps:')
     after_step(grid)
