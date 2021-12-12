@@ -42,31 +42,39 @@ def build_cave_system(filename: str) -> Tuple[Cave, Cave]:
     return start, end
 
 
-def yield_options(cave: Cave, path: list[Cave]) -> Iterable[Cave]:
+def yield_options(cave: Cave, path: list[Cave], visited_small_twice: bool) -> Iterable[Cave]:
     for e in cave.edges:
         if e.name == 'start':
             continue
-        if e.is_big or e not in path:
+        if e.is_big or not visited_small_twice or e not in path:
             print(f'{e} -> {path=}')
             yield e
 
 
-def find_paths(cave: Cave, path: list[Cave]) -> Iterable[list[Cave]]:
-    for option in yield_options(cave, path):
+def find_paths(cave: Cave, path: list[Cave], visited_small_twice: bool = False) -> Iterable[list[Cave]]:
+    for option in yield_options(cave, path, visited_small_twice):
         if option.name == 'end':
             yield path + [option]
         else:
-            yield from find_paths(option, path + [option])
+            new_visited_small_twice = visited_small_twice
+            if not visited_small_twice and not option.is_big and option in path:
+                new_visited_small_twice = True
+            yield from find_paths(option, path + [option], new_visited_small_twice)
 
 
-def find_all_paths(start: Cave) -> Iterable[list[Cave]]:
+def find_all_paths_part1(start: Cave) -> Iterable[list[Cave]]:
+    for edge in start.edges:
+        yield from find_paths(edge, [start, edge], True)
+
+
+def find_all_paths_part2(start: Cave) -> Iterable[list[Cave]]:
     for edge in start.edges:
         yield from find_paths(edge, [start, edge])
 
 
 def main():
     start, _ = build_cave_system('input')
-    paths = list(find_all_paths(start))
+    paths = list(find_all_paths_part2(start))
     for p in paths:
         print(f'{",".join(e.name for e in p)}')
     print(f'Number of caves: {len(paths)}')
