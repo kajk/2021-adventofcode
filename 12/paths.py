@@ -65,7 +65,7 @@ def find_all_paths(start: Cave) -> Iterable[list[Cave]]:
 
 
 def main():
-    start, _ = build_cave_system('test.input')
+    start, _ = build_cave_system('input')
     paths = list(find_all_paths(start))
     for p in paths:
         print(f'{",".join(e.name for e in p)}')
