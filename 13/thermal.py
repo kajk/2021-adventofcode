@@ -1,66 +1,71 @@
 #! /usr/bin/env python3.9
 
 from typing import Tuple
-from shared import all_lines, yield_grid, yield_grid_elms
+from shared import all_lines, yield_grid, yield_grid_elms, LazyGrid
 
 
-class Grid:
+class Thermal:
     @staticmethod
     def parse_lines(lines: list[str]):
         coordinates = []
-        max_row = 0
-        max_col = 0
         folding = False
-        for l in lines:
-            print(l)
-            if l == '':
+        for line in lines:
+            print(line)
+            if line == '':
                 folding = True
-                grid = Grid(max_row, max_col, coordinates)
+                grid = Thermal(coordinates)
                 grid.print()
             elif folding:
-                instruction = l.replace('fold along ', '')
+                instruction = line.replace('fold along ', '')
                 cor_type, pos = instruction.split('=')
                 grid.fold(cor_type, int(pos))
                 grid.print()
                 print(f'Visible dots: {grid.visible_dots}')
-                break  # part1: break after first fold
+                # break  # part1: break after first fold
             else:
-                s = l.split(',')
-                col = int(s[0])
-                row = int(s[1])
-                coordinates.append((row, col))
-                if row > max_row:
-                    max_row = row
-                if col > max_col:
-                    max_col = col
+                col, row = line.split(',')
+                coordinates.append((int(row), int(col)))
 
-    def __init__(self, max_row: int, max_col: int, coordinates: list[Tuple[int, int]]):
-        self.coordinates = [[False for _ in range(max_col + 1)] for _ in range(max_row + 1)]
+    def __init__(self, coordinates: list[Tuple[int, int]]):
+        self.grid: LazyGrid[bool] = LazyGrid()
         for row, col in coordinates:
-            self.coordinates[row][col] = True
+            self.grid.set(row, col, True)
 
     def fold(self, cor_type: str, pos: int):
         if cor_type == 'y':
             self._y_fold(pos)
         else:
-            print('No')
+            self._x_fold(pos)
 
     def _y_fold(self, pos: int):
-        new_coordinates = [[False for _ in range(len(self.coordinates[0]))] for _ in range(int(len(self.coordinates) / 2))]
-        self.print(new_coordinates)
+        new_grid: LazyGrid[bool] = LazyGrid()
         print('----')
-        for row_idx, col_idx, elm in yield_grid(self.coordinates):
+        for row_idx, col_idx, elm in self.grid.yield_grid():
             if row_idx == pos:
                 continue
             new_row = row_idx
             if row_idx > pos:
                 new_row = row_idx - ((row_idx - pos) * 2)
             print(f'{row_idx=}->{new_row=} {col_idx=}')
-            new_coordinates[new_row][col_idx] = new_coordinates[new_row][col_idx] or elm
-        self.coordinates = new_coordinates
+            new_grid.set(new_row, col_idx, new_grid.get(new_row, col_idx) or elm)
+        self.grid = new_grid
 
-    def print(self, cor = None):
-        for row_idx, col_idx, elm in yield_grid(self.coordinates if cor is None else cor):
+    def _x_fold(self, pos: int):
+        new_grid: LazyGrid[bool] = LazyGrid()
+        print('----')
+        for row_idx, col_idx, elm in self.grid.yield_grid():
+            if col_idx == pos:
+                continue
+            new_col = col_idx
+            if col_idx > pos:
+                new_col = col_idx - ((col_idx - pos) * 2)
+            print(f'{row_idx=} {col_idx=}->{new_col=}')
+            new_grid.set(row_idx, new_col, new_grid.get(row_idx, new_col) or elm)
+        self.grid = new_grid
+
+    def print(self, grid=None):
+        g = self.grid if grid is None else grid
+        for row_idx, col_idx, elm in g.yield_grid():
             if col_idx == 0 and row_idx != 0:
                 print()
             if col_idx == 0:
@@ -73,15 +78,15 @@ class Grid:
 
     @property
     def visible_dots(self):
-        c = 0
-        for elm in yield_grid_elms(self.coordinates):
+        count = 0
+        for _, _, elm in self.grid.yield_grid():
             if elm:
-                c += 1
-        return c
+                count += 1
+        return count
 
 
 def main():
-    Grid.parse_lines(all_lines('test.input'))
+    Thermal.parse_lines(all_lines('input'))
 
 
 if __name__ == '__main__':
